@@ -1,0 +1,76 @@
+# Ruby
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+# Documentation cache and generated files
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
+# Environment normalization
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# Bundler
+Gemfile.lock
+
+# RVM, rbenv, mise
+.ruby-version
+.ruby-gemset
+.rvmrc
+.tool-versions
+
+# IDE and editors
+/.idea/
+*.swp
+*.swo
+*~
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+/coverage/
+/.rspec_status
+
+# Byebug
+.byebug_history
+
+# IRB
+.irb_history
+
+# Pry
+.pry_history
+
+# Spring
+/spring/*.pid
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Local configuration
+.env
+.env.local
+.env.*.local
