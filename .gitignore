@@ -74,3 +74,10 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+CLAUDE.md
+lib/CLAUDE.md
+test/CLAUDE.md
+test/structural/CLAUDE.md
+test/behavioral/CLAUDE.md
+test/creational/CLAUDE.md
