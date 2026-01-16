@@ -87,7 +87,7 @@ module GofPatterns
       # Composite: ディレクトリ
       class Directory < FileSystemComponent
         def initialize(name)
-          super(name)
+          super
           @children = []
         end
 
@@ -304,13 +304,13 @@ module GofPatterns
           self
         end
 
-        def directory(name, &block)
+        def directory(name, &)
           dir = Directory.new(name)
           @current.add(dir)
           if block_given?
             previous = @current
             @current = dir
-            instance_eval(&block)
+            instance_eval(&)
             @current = previous
           end
           self
@@ -340,13 +340,13 @@ module GofPatterns
           self
         end
 
-        def department(name, &block)
+        def department(name, &)
           dept = Department.new(id: next_id, name: name)
           @current.add(dept)
           if block_given?
             previous = @current
             @current = dept
-            instance_eval(&block)
+            instance_eval(&)
             @current = previous
           end
           self

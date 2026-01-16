@@ -5,7 +5,7 @@ Ruby 3.4.8での Gang of Four デザインパターン実装。DDDアプロー�
 ## Requirements
 
 - Ruby 3.4.8 (mise管理)
-- 外部gem不要
+- Bundler
 
 ## Setup
 
@@ -15,9 +15,14 @@ mise install
 
 # バージョン確認
 ruby -v  # => ruby 3.4.8
+
+# 依存関係のインストール
+bundle install
 ```
 
 ## Usage
+
+### ライブラリとして使用
 
 ```ruby
 require 'gof_patterns'
@@ -28,16 +33,36 @@ GofPatterns::Structural::Adapter
 GofPatterns::Behavioral::Observer
 ```
 
+### サンプルコードの実行
+
+各パターンのサンプル実装が `examples/` ディレクトリにあります:
+
+```bash
+# 個別パターンの例を実行
+ruby examples/creational/singleton_example.rb
+ruby examples/structural/adapter_example.rb
+ruby examples/behavioral/observer_example.rb
+
+# 全ての例を確認
+ruby examples/**/*_example.rb
+```
+
 ## Test
 
 ```bash
 # 全テスト実行
-rake test
+bundle exec rake test
 
 # カテゴリ別テスト
-rake test:creational
-rake test:structural
-rake test:behavioral
+bundle exec rake test:creational
+bundle exec rake test:structural
+bundle exec rake test:behavioral
+
+# Rubocop (コードスタイルチェック)
+bundle exec rubocop
+
+# Rubocop 自動修正
+bundle exec rubocop -A
 ```
 
 ## Design Patterns
@@ -94,15 +119,21 @@ rake test:behavioral
 ```
 lib/
 ├── gof_patterns.rb           # メインエントリポイント
-├── creational/               # 生成パターン
-├── structural/               # 構造パターン
-└── behavioral/               # 振る舞いパターン
+├── creational/               # 生成パターン (5パターン)
+├── structural/               # 構造パターン (7パターン)
+└── behavioral/               # 振る舞いパターン (11パターン)
+
+examples/
+├── creational/               # 生成パターンの実行例
+├── structural/               # 構造パターンの実行例
+└── behavioral/               # 振る舞いパターンの実行例
 
 test/
 ├── test_helper.rb
-├── creational/
-├── structural/
-└── behavioral/
+├── examples/                 # サンプルコードのテスト
+├── creational/               # 生成パターンのテスト
+├── structural/               # 構造パターンのテスト
+└── behavioral/               # 振る舞いパターンのテスト
 ```
 
 ## License

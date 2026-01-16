@@ -88,7 +88,7 @@ module GofPatterns
       class LegacyPaymentSystem
         def execute_transaction(xml_data)
           # レガシーシステムのシミュレーション
-          amount = xml_data.match(/<amount>(\d+)<\/amount>/)[1]
+          amount = xml_data.match(%r{<amount>(\d+)</amount>})[1]
           "<response><status>OK</status><ref>LEG-#{SecureRandom.hex(4).upcase}</ref><processed>#{amount}</processed></response>"
         end
 
@@ -141,7 +141,7 @@ module GofPatterns
           parse_response(response)
         end
 
-        def refund(transaction_id, amount)
+        def refund(transaction_id, _amount)
           response = @legacy_system.cancel_transaction(transaction_id)
           parse_response(response)
         end
@@ -158,10 +158,10 @@ module GofPatterns
         end
 
         def parse_response(xml_response)
-          status_match = xml_response.match(/<status>(\w+)<\/status>/)
-          ref_match = xml_response.match(/<ref>([^<]+)<\/ref>/)
+          status_match = xml_response.match(%r{<status>(\w+)</status>})
+          ref_match = xml_response.match(%r{<ref>([^<]+)</ref>})
 
-          status = status_match[1] == 'OK' || status_match[1] == 'CANCELLED' ? :success : :failed
+          status = %w[OK CANCELLED].include?(status_match[1]) ? :success : :failed
           TransactionResult.new(
             transaction_id: ref_match[1],
             status: status,
@@ -170,8 +170,8 @@ module GofPatterns
         end
 
         def parse_status_response(xml_response)
-          ref_match = xml_response.match(/<ref>([^<]+)<\/ref>/)
-          state_match = xml_response.match(/<state>(\w+)<\/state>/)
+          ref_match = xml_response.match(%r{<ref>([^<]+)</ref>})
+          state_match = xml_response.match(%r{<state>(\w+)</state>})
 
           status = state_match[1] == 'COMPLETED' ? :success : :pending
           TransactionResult.new(

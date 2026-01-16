@@ -17,7 +17,7 @@ class TestFlyweight < GofPatternTest
     assert_equal 12, style.font_size
     assert style.bold
     refute style.italic
-    assert style.frozen?
+    assert_predicate style, :frozen?
   end
 
   def test_character_style_equality
@@ -42,6 +42,7 @@ class TestFlyweight < GofPatternTest
     )
 
     rendered = style.render('A')
+
     assert_match(/Times/, rendered)
     assert_match(/14px/, rendered)
     assert_match(/bold/, rendered)
@@ -90,7 +91,7 @@ class TestFlyweight < GofPatternTest
     )
 
     assert_equal 'Oak', type.name
-    assert type.frozen?
+    assert_predicate type, :frozen?
   end
 
   def test_tree_type_factory_sharing
@@ -121,7 +122,7 @@ class TestFlyweight < GofPatternTest
 
     assert_equal 'folder', icon.name
     assert_equal 32, icon.width
-    assert icon.frozen?
+    assert_predicate icon, :frozen?
   end
 
   def test_icon_cache_sharing
@@ -161,9 +162,10 @@ class TestFlyweight < GofPatternTest
     end
 
     stats = editor.memory_stats
+
     assert_equal 100, stats[:total_characters]
     assert_equal 1, stats[:unique_styles]
-    assert stats[:memory_saved_ratio] > 0.9
+    assert_operator stats[:memory_saved_ratio], :>, 0.9
   end
 
   def test_forest_simulation
@@ -187,9 +189,10 @@ class TestFlyweight < GofPatternTest
     end
 
     report = forest.memory_report
+
     assert_equal 1, report[:types_count]
     assert_equal 100, report[:total_trees]
-    assert report[:bytes_saved] > 0
+    assert_predicate report[:bytes_saved], :positive?
   end
 
   def test_factory_clear
@@ -200,6 +203,7 @@ class TestFlyweight < GofPatternTest
     assert_equal 2, factory.styles_count
 
     factory.clear
+
     assert_equal 0, factory.styles_count
   end
 end

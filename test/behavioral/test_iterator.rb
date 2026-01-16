@@ -14,7 +14,7 @@ class TestIterator < GofPatternTest
 
     assert_equal '978-4-123-45678-9', book.isbn
     assert_equal 'Ruby入門', book.title
-    assert book.frozen?
+    assert_predicate book, :frozen?
   end
 
   def test_bookshelf_add_and_size
@@ -34,11 +34,11 @@ class TestIterator < GofPatternTest
 
     iterator = shelf.create_iterator
 
-    assert iterator.has_next?
+    assert_predicate iterator, :has_next?
     assert_equal 'A', iterator.next.title
-    assert iterator.has_next?
+    assert_predicate iterator, :has_next?
     assert_equal 'B', iterator.next.title
-    refute iterator.has_next?
+    refute_predicate iterator, :has_next?
   end
 
   def test_bookshelf_iterator_reset
@@ -48,10 +48,11 @@ class TestIterator < GofPatternTest
     iterator = shelf.create_iterator
     iterator.next
 
-    refute iterator.has_next?
+    refute_predicate iterator, :has_next?
 
     iterator.reset
-    assert iterator.has_next?
+
+    assert_predicate iterator, :has_next?
   end
 
   def test_reverse_iterator
@@ -79,12 +80,10 @@ class TestIterator < GofPatternTest
     end
 
     titles = []
-    while filter_iterator.has_next?
-      titles << filter_iterator.next.title
-    end
+    titles << filter_iterator.next.title while filter_iterator.has_next?
 
     assert_equal 2, titles.size
-    assert titles.all? { |t| t.include?('Ruby') }
+    assert(titles.all? { |t| t.include?('Ruby') })
   end
 
   def test_bookshelf_enumerable
@@ -93,6 +92,7 @@ class TestIterator < GofPatternTest
     shelf.add(GofPatterns::Behavioral::Iterator::Book.new(isbn: '2', title: 'B', author: 'Y', year: 2021))
 
     titles = shelf.map(&:title)
+
     assert_equal %w[A B], titles
   end
 
@@ -110,9 +110,7 @@ class TestIterator < GofPatternTest
 
     iterator = tree.create_iterator(traversal: :inorder)
     values = []
-    while iterator.has_next?
-      values << iterator.next
-    end
+    values << iterator.next while iterator.has_next?
 
     assert_equal [1, 3, 4, 5, 7], values
   end
@@ -123,9 +121,7 @@ class TestIterator < GofPatternTest
 
     iterator = tree.create_iterator(traversal: :preorder)
     values = []
-    while iterator.has_next?
-      values << iterator.next
-    end
+    values << iterator.next while iterator.has_next?
 
     assert_equal [5, 3, 7], values
   end
@@ -136,9 +132,7 @@ class TestIterator < GofPatternTest
 
     iterator = tree.create_iterator(traversal: :postorder)
     values = []
-    while iterator.has_next?
-      values << iterator.next
-    end
+    values << iterator.next while iterator.has_next?
 
     assert_equal [3, 7, 5], values
   end
@@ -149,6 +143,7 @@ class TestIterator < GofPatternTest
     shelf.add(GofPatterns::Behavioral::Iterator::Book.new(isbn: '2', title: 'B', author: 'Y', year: 2021))
 
     array = GofPatterns::Behavioral::Iterator::IteratorUtils.to_array(shelf.create_iterator)
+
     assert_equal 2, array.size
   end
 
@@ -158,6 +153,7 @@ class TestIterator < GofPatternTest
     shelf.add(GofPatterns::Behavioral::Iterator::Book.new(isbn: '2', title: 'B', author: 'Y', year: 2021))
 
     titles = GofPatterns::Behavioral::Iterator::IteratorUtils.map(shelf.create_iterator, &:title)
+
     assert_equal %w[A B], titles
   end
 
@@ -180,6 +176,7 @@ class TestIterator < GofPatternTest
     shelf.add(GofPatterns::Behavioral::Iterator::Book.new(isbn: '3', title: 'C', author: 'Z', year: 2022))
 
     count = GofPatterns::Behavioral::Iterator::IteratorUtils.count(shelf.create_iterator)
+
     assert_equal 3, count
   end
 

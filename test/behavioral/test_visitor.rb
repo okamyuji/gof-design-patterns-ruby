@@ -6,17 +6,20 @@ require_relative '../../lib/behavioral/visitor/visitor'
 class TestVisitor < GofPatternTest
   def test_circle_creation
     circle = GofPatterns::Behavioral::Visitor::Circle.new(10)
+
     assert_equal 10, circle.radius
   end
 
   def test_rectangle_creation
     rect = GofPatterns::Behavioral::Visitor::Rectangle.new(20, 10)
+
     assert_equal 20, rect.width
     assert_equal 10, rect.height
   end
 
   def test_triangle_creation
     triangle = GofPatterns::Behavioral::Visitor::Triangle.new(10, 5)
+
     assert_equal 10, triangle.base
     assert_equal 5, triangle.height
   end
@@ -27,6 +30,7 @@ class TestVisitor < GofPatternTest
 
     area = circle.accept(calculator)
     expected = Math::PI * 100
+
     assert_in_delta expected, area, 0.001
   end
 
@@ -35,6 +39,7 @@ class TestVisitor < GofPatternTest
     calculator = GofPatterns::Behavioral::Visitor::AreaCalculator.new
 
     area = rect.accept(calculator)
+
     assert_equal 200, area
   end
 
@@ -43,6 +48,7 @@ class TestVisitor < GofPatternTest
     calculator = GofPatterns::Behavioral::Visitor::AreaCalculator.new
 
     area = triangle.accept(calculator)
+
     assert_equal 25, area
   end
 
@@ -52,6 +58,7 @@ class TestVisitor < GofPatternTest
 
     perimeter = circle.accept(calculator)
     expected = 2 * Math::PI * 10
+
     assert_in_delta expected, perimeter, 0.001
   end
 
@@ -60,6 +67,7 @@ class TestVisitor < GofPatternTest
     calculator = GofPatterns::Behavioral::Visitor::PerimeterCalculator.new
 
     perimeter = rect.accept(calculator)
+
     assert_equal 60, perimeter
   end
 
@@ -68,6 +76,7 @@ class TestVisitor < GofPatternTest
     renderer = GofPatterns::Behavioral::Visitor::SvgRenderer.new
 
     svg = circle.accept(renderer)
+
     assert_match(/<circle.*r="10"/, svg)
     assert_match(/fill="blue"/, svg)
   end
@@ -77,6 +86,7 @@ class TestVisitor < GofPatternTest
     renderer = GofPatterns::Behavioral::Visitor::SvgRenderer.new
 
     svg = rect.accept(renderer)
+
     assert_match(/<rect.*width="100".*height="50"/, svg)
   end
 
@@ -111,6 +121,7 @@ class TestVisitor < GofPatternTest
     dir.add(GofPatterns::Behavioral::Visitor::File.new('b.txt', 200))
 
     calculator = GofPatterns::Behavioral::Visitor::SizeCalculator.new
+
     assert_equal 300, dir.accept(calculator)
   end
 
@@ -122,6 +133,7 @@ class TestVisitor < GofPatternTest
     root.add(sub)
 
     calculator = GofPatterns::Behavioral::Visitor::SizeCalculator.new
+
     assert_equal 150, root.accept(calculator)
   end
 
@@ -131,6 +143,7 @@ class TestVisitor < GofPatternTest
     root.add(GofPatterns::Behavioral::Visitor::File.new('b.txt', 20))
 
     counter = GofPatterns::Behavioral::Visitor::FileCounter.new
+
     assert_equal 2, root.accept(counter)
   end
 

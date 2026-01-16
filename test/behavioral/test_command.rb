@@ -14,7 +14,7 @@ class TestCommand < GofPatternTest
 
   def test_text_document_delete
     doc = GofPatterns::Behavioral::Command::TextDocument.new('Hello World')
-    doc.delete(5, 6)  # Delete " World" (6 chars starting at position 5)
+    doc.delete(5, 6) # Delete " World" (6 chars starting at position 5)
 
     assert_equal 'Hello', doc.content
   end
@@ -32,9 +32,11 @@ class TestCommand < GofPatternTest
     cmd = GofPatterns::Behavioral::Command::InsertCommand.new(doc, 'Hello')
 
     cmd.execute
+
     assert_equal 'Hello', doc.content
 
     cmd.undo
+
     assert_equal '', doc.content
   end
 
@@ -44,9 +46,11 @@ class TestCommand < GofPatternTest
     cmd = GofPatterns::Behavioral::Command::DeleteCommand.new(doc, 6, 5)
 
     cmd.execute
+
     assert_equal 'Hello ', doc.content
 
     cmd.undo
+
     assert_equal 'Hello World', doc.content
   end
 
@@ -55,22 +59,28 @@ class TestCommand < GofPatternTest
     cmd = GofPatterns::Behavioral::Command::ReplaceCommand.new(doc, 6, 5, 'Ruby')
 
     cmd.execute
+
     assert_equal 'Hello Ruby', doc.content
 
     cmd.undo
+
     assert_equal 'Hello World', doc.content
   end
 
   def test_macro_command
     doc = GofPatterns::Behavioral::Command::TextDocument.new
     macro = GofPatterns::Behavioral::Command::MacroCommand.new('Format')
-      .add(GofPatterns::Behavioral::Command::InsertCommand.new(doc, 'Hello'))
-      .add(GofPatterns::Behavioral::Command::InsertCommand.new(doc, ' World'))
+                                                          .add(GofPatterns::Behavioral::Command::InsertCommand.new(doc,
+                                                                                                                   'Hello'))
+                                                          .add(GofPatterns::Behavioral::Command::InsertCommand.new(doc,
+                                                                                                                   ' World'))
 
     macro.execute
+
     assert_equal 'Hello World', doc.content
 
     macro.undo
+
     assert_equal '', doc.content
   end
 
@@ -82,12 +92,14 @@ class TestCommand < GofPatternTest
     history.execute(GofPatterns::Behavioral::Command::InsertCommand.new(doc, 'B'))
 
     assert_equal 'AB', doc.content
-    assert history.can_undo?
+    assert_predicate history, :can_undo?
 
     history.undo
+
     assert_equal 'A', doc.content
 
     history.redo
+
     assert_equal 'AB', doc.content
   end
 
@@ -100,7 +112,7 @@ class TestCommand < GofPatternTest
     history.undo
     history.execute(GofPatterns::Behavioral::Command::InsertCommand.new(doc, 'C'))
 
-    refute history.can_redo?
+    refute_predicate history, :can_redo?
     assert_equal 'AC', doc.content
   end
 
@@ -108,9 +120,11 @@ class TestCommand < GofPatternTest
     account = GofPatterns::Behavioral::Command::BankAccount.new('001', 1000)
 
     account.deposit(500)
+
     assert_equal 1500, account.balance
 
     account.withdraw(200)
+
     assert_equal 1300, account.balance
   end
 
@@ -127,9 +141,11 @@ class TestCommand < GofPatternTest
     cmd = GofPatterns::Behavioral::Command::DepositCommand.new(account, 500)
 
     cmd.execute
+
     assert_equal 1500, account.balance
 
     cmd.undo
+
     assert_equal 1000, account.balance
   end
 
@@ -138,9 +154,11 @@ class TestCommand < GofPatternTest
     cmd = GofPatterns::Behavioral::Command::WithdrawCommand.new(account, 300)
 
     cmd.execute
+
     assert_equal 700, account.balance
 
     cmd.undo
+
     assert_equal 1000, account.balance
   end
 
@@ -150,10 +168,12 @@ class TestCommand < GofPatternTest
     cmd = GofPatterns::Behavioral::Command::TransferCommand.new(from, to, 300)
 
     cmd.execute
+
     assert_equal 700, from.balance
     assert_equal 800, to.balance
 
     cmd.undo
+
     assert_equal 1000, from.balance
     assert_equal 500, to.balance
   end
@@ -163,12 +183,15 @@ class TestCommand < GofPatternTest
 
     editor.insert('Hello')
     editor.insert(' World')
+
     assert_equal 'Hello World', editor.content
 
     editor.undo
+
     assert_equal 'Hello', editor.content
 
     editor.redo
+
     assert_equal 'Hello World', editor.content
   end
 
@@ -178,13 +201,16 @@ class TestCommand < GofPatternTest
     service.create_account('A002', 5000)
 
     service.deposit('A001', 2000)
+
     assert_equal 12_000, service.balance('A001')
 
     service.transfer('A001', 'A002', 3000)
+
     assert_equal 9000, service.balance('A001')
     assert_equal 8000, service.balance('A002')
 
     service.undo
+
     assert_equal 12_000, service.balance('A001')
     assert_equal 5000, service.balance('A002')
   end

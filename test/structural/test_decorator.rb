@@ -84,11 +84,11 @@ class TestDecorator < GofPatternTest
     coffee = GofPatterns::Structural::Decorator::CoffeeBuilder.new(
       GofPatterns::Structural::Decorator::Latte.new
     )
-      .with_milk
-      .with_whip
-      .with_extra_shot
-      .size(:venti)
-      .build
+                                                              .with_milk
+                                                              .with_whip
+                                                              .with_extra_shot
+                                                              .size(:venti)
+                                                              .build
 
     # 400 + 50 + 100 + 100 + 100 = 750
     assert_equal 750, coffee.cost
@@ -181,8 +181,8 @@ class TestDecorator < GofPatternTest
     logged.write('test')
     logged.read
 
-    assert logs.any? { |l| l.include?('Writing') }
-    assert logs.any? { |l| l.include?('Reading') }
+    assert(logs.any? { |l| l.include?('Writing') })
+    assert(logs.any? { |l| l.include?('Reading') })
   end
 
   def test_combined_data_decorators

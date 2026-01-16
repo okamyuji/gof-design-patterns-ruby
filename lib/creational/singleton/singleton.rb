@@ -138,9 +138,7 @@ module GofPatterns
           @level = new_level
         end
 
-        def output=(io)
-          @output = io
-        end
+        attr_writer :output
 
         def debug(message)
           log(:debug, message)

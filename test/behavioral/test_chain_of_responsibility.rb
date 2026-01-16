@@ -13,7 +13,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     assert_equal :authenticate, request.type
     assert_equal 'token123', request.content
-    assert request.frozen?
+    assert_predicate request, :frozen?
   end
 
   def test_response_success
@@ -24,7 +24,7 @@ class TestChainOfResponsibility < GofPatternTest
       data: { key: 'value' }
     )
 
-    assert response.success?
+    assert_predicate response, :success?
     assert_equal 'OK', response.message
   end
 
@@ -39,7 +39,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = handler.handle(request)
 
-    assert response.success?
+    assert_predicate response, :success?
     assert_match(/Authentication successful/, response.message)
   end
 
@@ -54,7 +54,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = handler.handle(request)
 
-    refute response.success?
+    refute_predicate response, :success?
     assert_match(/Invalid token/, response.message)
   end
 
@@ -70,7 +70,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = handler.handle(request)
 
-    assert response.success?
+    assert_predicate response, :success?
   end
 
   def test_authorization_handler_denied
@@ -85,13 +85,13 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = handler.handle(request)
 
-    refute response.success?
+    refute_predicate response, :success?
   end
 
   def test_validation_handler
     validators = [
       ->(data) { data[:name].nil? ? 'Name is required' : nil },
-      ->(data) { data[:age].to_i < 0 ? 'Age must be positive' : nil }
+      ->(data) { data[:age].to_i.negative? ? 'Age must be positive' : nil }
     ]
     handler = GofPatterns::Behavioral::ChainOfResponsibility::ValidationHandler.new(
       validators: validators
@@ -103,7 +103,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = handler.handle(request)
 
-    assert response.success?
+    assert_predicate response, :success?
   end
 
   def test_validation_handler_fails
@@ -120,7 +120,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = handler.handle(request)
 
-    refute response.success?
+    refute_predicate response, :success?
   end
 
   def test_handler_chain
@@ -139,7 +139,8 @@ class TestChainOfResponsibility < GofPatternTest
       type: :authenticate,
       content: 'secret'
     )
-    assert auth.handle(auth_request).success?
+
+    assert_predicate auth.handle(auth_request), :success?
 
     # Unknown request goes to default handler
     unknown = GofPatterns::Behavioral::ChainOfResponsibility::Request.new(
@@ -147,7 +148,8 @@ class TestChainOfResponsibility < GofPatternTest
       content: 'test'
     )
     response = auth.handle(unknown)
-    assert response.success?
+
+    assert_predicate response, :success?
     assert_match(/default handler/, response.message)
   end
 
@@ -166,8 +168,8 @@ class TestChainOfResponsibility < GofPatternTest
 
     response = logging.handle(request)
 
-    assert response.success?
-    refute logs.empty?
+    assert_predicate response, :success?
+    refute_empty logs
   end
 
   def test_support_ticket_creation
@@ -180,7 +182,7 @@ class TestChainOfResponsibility < GofPatternTest
 
     assert_equal 'T-001', ticket.id
     assert_equal :high, ticket.priority
-    refute ticket.critical?
+    refute_predicate ticket, :critical?
   end
 
   def test_support_ticket_invalid_priority
@@ -205,7 +207,8 @@ class TestChainOfResponsibility < GofPatternTest
       description: 'General question'
     )
     response = chain.handle(general_ticket)
-    assert response.success?
+
+    assert_predicate response, :success?
     assert_match(/Level 1/, response.handler)
 
     # Technical medium -> Level 2
@@ -216,7 +219,8 @@ class TestChainOfResponsibility < GofPatternTest
       description: 'Tech issue'
     )
     response = chain.handle(tech_ticket)
-    assert response.success?
+
+    assert_predicate response, :success?
     assert_match(/Level 2/, response.handler)
 
     # Critical -> Level 3
@@ -227,7 +231,8 @@ class TestChainOfResponsibility < GofPatternTest
       description: 'Critical issue'
     )
     response = chain.handle(critical_ticket)
-    assert response.success?
+
+    assert_predicate response, :success?
     assert_match(/Level 3/, response.handler)
   end
 
@@ -244,6 +249,7 @@ class TestChainOfResponsibility < GofPatternTest
     )
 
     response = chain.handle(request)
-    assert response.success?
+
+    assert_predicate response, :success?
   end
 end

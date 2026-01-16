@@ -36,9 +36,11 @@ class TestMemento < GofPatternTest
     memento = editor.create_memento
 
     editor.type(' Modified')
+
     assert_equal 'Original Modified', editor.content
 
     editor.restore_from_memento(memento)
+
     assert_equal 'Original', editor.content
   end
 
@@ -48,6 +50,7 @@ class TestMemento < GofPatternTest
     memento = editor.create_memento('Preview Test')
 
     preview = memento.preview
+
     assert_match(/Preview Test/, preview)
     assert_match(/Short text/, preview)
   end
@@ -62,7 +65,7 @@ class TestMemento < GofPatternTest
     editor.type('B')
     history.save(editor.create_memento)
 
-    assert history.can_undo?
+    assert_predicate history, :can_undo?
     memento = history.undo
     editor.restore_from_memento(memento)
 
@@ -80,10 +83,12 @@ class TestMemento < GofPatternTest
     history.save(editor.create_memento)
 
     history.undo
-    assert history.can_redo?
+
+    assert_predicate history, :can_redo?
 
     memento = history.redo
     editor.restore_from_memento(memento)
+
     assert_equal 'AB', editor.content
   end
 
@@ -109,7 +114,7 @@ class TestMemento < GofPatternTest
     history.clear
 
     assert_equal 0, history.size
-    refute history.can_undo?
+    refute_predicate history, :can_undo?
   end
 
   def test_game_character_creation
@@ -126,11 +131,12 @@ class TestMemento < GofPatternTest
     character.take_damage(30)
 
     assert_equal 70, character.health
-    assert character.alive?
+    assert_predicate character, :alive?
 
     character.take_damage(100)
+
     assert_equal 0, character.health
-    refute character.alive?
+    refute_predicate character, :alive?
   end
 
   def test_game_character_level_up
@@ -171,9 +177,11 @@ class TestMemento < GofPatternTest
     manager.save(character, 'slot1')
 
     character.take_damage(50)
+
     assert_equal 50, character.health
 
     manager.load(character, 'slot1')
+
     assert_equal 100, character.health
   end
 
@@ -188,14 +196,17 @@ class TestMemento < GofPatternTest
     manager.auto_save(character)
 
     character.take_damage(30)
+
     assert_equal 20, character.health
 
     # Undo goes back in history: from save2(50) to save1(100)
     manager.undo(character)
+
     assert_equal 100, character.health
 
     # Redo goes forward: from save1(100) to save2(50)
     manager.redo(character)
+
     assert_equal 50, character.health
   end
 
@@ -207,6 +218,7 @@ class TestMemento < GofPatternTest
     manager.save(character, 'save2')
 
     saves = manager.list_saves
+
     assert_equal 2, saves.size
   end
 
@@ -219,9 +231,11 @@ class TestMemento < GofPatternTest
     assert_equal 'Hello World', app.content
 
     app.undo
+
     assert_equal 'Hello', app.content
 
     app.redo
+
     assert_equal 'Hello World', app.content
   end
 
@@ -234,6 +248,6 @@ class TestMemento < GofPatternTest
     initial_size = app.history_size
     app.type(' Extra')
 
-    assert app.history_size > initial_size
+    assert_operator app.history_size, :>, initial_size
   end
 end

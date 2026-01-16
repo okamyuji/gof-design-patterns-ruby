@@ -12,7 +12,7 @@ class TestMediator < GofPatternTest
 
     assert_equal 'Alice', msg.sender
     assert_equal 'Hello!', msg.content
-    assert msg.frozen?
+    assert_predicate msg, :frozen?
   end
 
   def test_chat_room_register_user
@@ -35,7 +35,7 @@ class TestMediator < GofPatternTest
 
     alice.send_message('Hello everyone!')
 
-    assert bob.received_messages.any? { |m| m.content == 'Hello everyone!' }
+    assert(bob.received_messages.any? { |m| m.content == 'Hello everyone!' })
     # 送信者は自分のメッセージを受け取らない（ブロードキャスト時）
   end
 
@@ -51,8 +51,8 @@ class TestMediator < GofPatternTest
 
     alice.send_private_message('Bob', 'Secret message')
 
-    assert bob.received_messages.any? { |m| m.content == 'Secret message' }
-    refute charlie.received_messages.any? { |m| m.content == 'Secret message' }
+    assert(bob.received_messages.any? { |m| m.content == 'Secret message' })
+    refute(charlie.received_messages.any? { |m| m.content == 'Secret message' })
   end
 
   def test_chat_room_message_history
@@ -62,7 +62,7 @@ class TestMediator < GofPatternTest
     room.register(alice)
     alice.send_message('Test message')
 
-    assert room.message_history.any? { |m| m.content == 'Test message' }
+    assert(room.message_history.any? { |m| m.content == 'Test message' })
   end
 
   def test_chat_user_clear_messages
@@ -76,7 +76,7 @@ class TestMediator < GofPatternTest
     alice.send_message('Message')
     bob.clear_messages
 
-    assert bob.received_messages.empty?
+    assert_empty bob.received_messages
   end
 
   def test_form_dialog_text_changed
@@ -89,10 +89,12 @@ class TestMediator < GofPatternTest
 
     # テキストが空の状態
     text_field.set_text('')
+
     refute submit_button.enabled
 
     # テキストを入力
     text_field.set_text('user123')
+
     assert submit_button.enabled
   end
 
@@ -103,9 +105,11 @@ class TestMediator < GofPatternTest
     dialog.register(field)
 
     field.set_text('test@example.com')
+
     assert_equal 'test@example.com', field.text
 
     field.clear
+
     assert_equal '', field.text
   end
 
@@ -117,8 +121,10 @@ class TestMediator < GofPatternTest
 
     refute checkbox.checked
     checkbox.toggle
+
     assert checkbox.checked
     checkbox.toggle
+
     refute checkbox.checked
   end
 
@@ -129,11 +135,14 @@ class TestMediator < GofPatternTest
     dialog.register(checkbox)
 
     checkbox.check
+
     assert checkbox.checked
     checkbox.check # 再度チェックしても変化なし
+
     assert checkbox.checked
 
     checkbox.uncheck
+
     refute checkbox.checked
   end
 
@@ -175,7 +184,7 @@ class TestMediator < GofPatternTest
     flight.request_landing
 
     assert_equal :landed, flight.status
-    assert flight.messages.any? { |m| m.include?('Cleared for landing') }
+    assert(flight.messages.any? { |m| m.include?('Cleared for landing') })
   end
 
   def test_flight_landing_queue

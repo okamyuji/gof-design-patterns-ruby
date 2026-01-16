@@ -21,7 +21,7 @@ class TestFacade < GofPatternTest
 
     assert_equal 'PROD-001', item.product_id
     assert_equal 2000, item.total_price
-    assert item.frozen?
+    assert_predicate item, :frozen?
   end
 
   def test_shipping_address_value_object
@@ -33,7 +33,7 @@ class TestFacade < GofPatternTest
     )
 
     assert_equal '〒100-0001 Tokyo, Chiyoda', address.full_address
-    assert address.frozen?
+    assert_predicate address, :frozen?
   end
 
   def test_place_order_success
@@ -187,8 +187,8 @@ class TestFacade < GofPatternTest
 
     estimate = @service.estimate_shipping(address, items)
 
-    assert estimate[:cost].positive?
-    assert estimate[:estimated_days].positive?
+    assert_predicate estimate[:cost], :positive?
+    assert_predicate estimate[:estimated_days], :positive?
   end
 
   def test_inventory_system_direct

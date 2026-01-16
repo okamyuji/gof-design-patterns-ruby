@@ -8,7 +8,7 @@ class TestBridge < GofPatternTest
     sender = GofPatterns::Structural::Bridge::EmailSender.new
     result = sender.send_message('test@example.com', 'Subject', 'Body')
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_equal :email, result.channel
     assert_equal 'test@example.com', result.recipient
   end
@@ -17,7 +17,7 @@ class TestBridge < GofPatternTest
     sender = GofPatterns::Structural::Bridge::SmsSender.new
     result = sender.send_message('090-1234-5678', 'Subject', 'Short message')
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_equal :sms, result.channel
   end
 
@@ -26,7 +26,7 @@ class TestBridge < GofPatternTest
     long_message = 'A' * 200
     result = sender.send_message('090-1234-5678', 'Subject', long_message)
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/160 chars/, result.details)
   end
 
@@ -34,7 +34,7 @@ class TestBridge < GofPatternTest
     sender = GofPatterns::Structural::Bridge::PushNotificationSender.new
     result = sender.send_message('device-123', 'Alert', 'Push message')
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_equal :push, result.channel
   end
 
@@ -42,7 +42,7 @@ class TestBridge < GofPatternTest
     sender = GofPatterns::Structural::Bridge::SlackSender.new
     result = sender.send_message('general', 'Notice', 'Slack message')
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_equal :slack, result.channel
   end
 
@@ -52,7 +52,7 @@ class TestBridge < GofPatternTest
 
     result = notification.notify('test@example.com', { subject: 'Test', body: 'Content' })
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/URGENT/, result.details)
   end
 
@@ -62,7 +62,7 @@ class TestBridge < GofPatternTest
 
     result = notification.notify('090-1234-5678', { subject: 'Hello', body: 'Message' })
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_scheduled_notification
@@ -72,7 +72,7 @@ class TestBridge < GofPatternTest
 
     result = notification.notify('test@example.com', { subject: 'Later', body: 'Content' })
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_batch_notification
@@ -105,7 +105,7 @@ class TestBridge < GofPatternTest
       notification_type: :regular
     )
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_message_delivery_result_value_object
@@ -116,8 +116,8 @@ class TestBridge < GofPatternTest
       details: 'OK'
     )
 
-    assert result1.success?
+    assert_predicate result1, :success?
     assert_equal :email, result1.channel
-    assert result1.frozen?
+    assert_predicate result1, :frozen?
   end
 end

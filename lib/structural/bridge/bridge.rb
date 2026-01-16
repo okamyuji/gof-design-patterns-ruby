@@ -29,7 +29,7 @@ module GofPatterns
           @port = port
         end
 
-        def send_message(recipient, subject, body)
+        def send_message(recipient, subject, _body)
           MessageDeliveryResult.new(
             success: true,
             channel: :email,
@@ -71,7 +71,7 @@ module GofPatterns
           @app_id = app_id
         end
 
-        def send_message(recipient, subject, body)
+        def send_message(recipient, subject, _body)
           MessageDeliveryResult.new(
             success: true,
             channel: :push,
@@ -91,7 +91,7 @@ module GofPatterns
           @webhook_url = webhook_url
         end
 
-        def send_message(recipient, subject, body)
+        def send_message(recipient, subject, _body)
           MessageDeliveryResult.new(
             success: true,
             channel: :slack,
@@ -231,11 +231,11 @@ module GofPatterns
           end
         end
 
-        def send_notification(recipient:, message:, sender_type:, notification_type: :regular, **options)
+        def send_notification(recipient:, message:, sender_type:, notification_type: :regular, **)
           notification = create_notification(
             sender_type: sender_type,
             notification_type: notification_type,
-            **options
+            **
           )
           notification.notify(recipient, message)
         end

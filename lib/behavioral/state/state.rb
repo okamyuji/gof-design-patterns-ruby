@@ -155,9 +155,7 @@ module GofPatterns
         end
 
         def select_product(machine, name)
-          unless machine.product_available?(name)
-            return { success: false, message: "#{name} is out of stock" }
-          end
+          return { success: false, message: "#{name} is out of stock" } unless machine.product_available?(name)
 
           price = machine.product_price(name)
           if machine.balance < price
@@ -188,14 +186,10 @@ module GofPatterns
         end
 
         def select_product(machine, name)
-          unless machine.product_available?(name)
-            return { success: false, message: "#{name} is out of stock" }
-          end
+          return { success: false, message: "#{name} is out of stock" } unless machine.product_available?(name)
 
           price = machine.product_price(name)
-          if machine.balance < price
-            return { success: false, message: "Insufficient balance for #{name}" }
-          end
+          return { success: false, message: "Insufficient balance for #{name}" } if machine.balance < price
 
           machine.set_selected_product(name)
           { success: true, message: "Changed selection to #{name}" }

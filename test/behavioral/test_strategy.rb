@@ -13,10 +13,10 @@ class TestStrategy < GofPatternTest
       message: 'OK'
     )
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_equal 'TXN-001', result.transaction_id
     assert_equal 1030, result.total
-    assert result.frozen?
+    assert_predicate result, :frozen?
   end
 
   def test_credit_card_payment
@@ -28,7 +28,7 @@ class TestStrategy < GofPatternTest
 
     result = strategy.pay(10_000)
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^CC-/, result.transaction_id)
     assert_equal 300, result.fee # 3%
   end
@@ -50,7 +50,7 @@ class TestStrategy < GofPatternTest
 
     result = strategy.pay(10_000)
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^PP-/, result.transaction_id)
     assert_equal 440, result.fee # 4% + 40
   end
@@ -63,7 +63,7 @@ class TestStrategy < GofPatternTest
 
     result = strategy.pay(50_000)
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^BT-/, result.transaction_id)
     assert_equal 330, result.fee # 固定
   end
@@ -73,7 +73,7 @@ class TestStrategy < GofPatternTest
 
     result = strategy.pay(5000)
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^COD-/, result.transaction_id)
     assert_equal 330, result.fee # 0-9999: 330
   end
@@ -97,7 +97,8 @@ class TestStrategy < GofPatternTest
     processor.strategy = card
 
     result = processor.process_payment(1000)
-    assert result.success?
+
+    assert_predicate result, :success?
     assert_equal 'Credit Card', processor.payment_method_name
   end
 
@@ -117,12 +118,14 @@ class TestStrategy < GofPatternTest
       expiry: '12/25',
       cvv: '123'
     )
+
     assert_equal 30, processor.calculate_fee(1000) # 3%
 
     processor.strategy = GofPatterns::Behavioral::Strategy::BankTransferPayment.new(
       bank_code: '0001',
       account_number: '1234567'
     )
+
     assert_equal 330, processor.calculate_fee(1000) # 固定
   end
 
@@ -132,6 +135,7 @@ class TestStrategy < GofPatternTest
     )
 
     result = sorter.sort([5, 2, 8, 1, 9])
+
     assert_equal [1, 2, 5, 8, 9], result
     assert_equal 'Bubble Sort', sorter.algorithm_name
   end
@@ -142,6 +146,7 @@ class TestStrategy < GofPatternTest
     )
 
     result = sorter.sort([5, 2, 8, 1, 9])
+
     assert_equal [1, 2, 5, 8, 9], result
     assert_equal 'Quick Sort', sorter.algorithm_name
   end
@@ -152,6 +157,7 @@ class TestStrategy < GofPatternTest
     )
 
     result = sorter.sort([5, 2, 8, 1, 9])
+
     assert_equal [1, 2, 5, 8, 9], result
     assert_equal 'Merge Sort', sorter.algorithm_name
   end
@@ -160,6 +166,7 @@ class TestStrategy < GofPatternTest
     sorter = GofPatterns::Behavioral::Strategy::Sorter.new
 
     result = sorter.sort([5, 2, 8, 1, 9])
+
     assert_equal [1, 2, 5, 8, 9], result
   end
 
@@ -193,15 +200,19 @@ class TestStrategy < GofPatternTest
     factory = GofPatterns::Behavioral::Strategy::PaymentStrategyFactory
 
     credit = factory.create(:credit_card, card_number: '4111', expiry: '12/25', cvv: '123')
+
     assert_instance_of GofPatterns::Behavioral::Strategy::CreditCardPayment, credit
 
     paypal = factory.create(:paypal, email: 'test@example.com')
+
     assert_instance_of GofPatterns::Behavioral::Strategy::PayPalPayment, paypal
 
     bank = factory.create(:bank_transfer, bank_code: '0001', account_number: '123')
+
     assert_instance_of GofPatterns::Behavioral::Strategy::BankTransferPayment, bank
 
     cod = factory.create(:cod)
+
     assert_instance_of GofPatterns::Behavioral::Strategy::CashOnDeliveryPayment, cod
   end
 

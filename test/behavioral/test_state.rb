@@ -177,8 +177,8 @@ class TestState < GofPatternTest
     order.confirm
     order.ship
 
-    assert order.history.any? { |h| h[:action] == 'Confirmed' }
-    assert order.history.any? { |h| h[:action] == 'Shipped' }
+    assert(order.history.any? { |h| h[:action] == 'Confirmed' })
+    assert(order.history.any? { |h| h[:action] == 'Shipped' })
   end
 
   def test_order_service_create
@@ -194,6 +194,7 @@ class TestState < GofPatternTest
     order = service.create_order([], 1000)
 
     found = service.find_order(order.id)
+
     assert_equal order, found
   end
 
@@ -202,7 +203,7 @@ class TestState < GofPatternTest
 
     order1 = service.create_order([], 100)
     order2 = service.create_order([], 200)
-    order3 = service.create_order([], 300)
+    service.create_order([], 300)
 
     order1.confirm
     order2.confirm

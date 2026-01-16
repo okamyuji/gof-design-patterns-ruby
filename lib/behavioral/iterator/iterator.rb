@@ -100,9 +100,7 @@ module GofPatterns
           return to_enum(:each) unless block_given?
 
           iterator = create_iterator
-          while iterator.has_next?
-            block.call(iterator.next)
-          end
+          block.call(iterator.next) while iterator.has_next?
         end
       end
 
@@ -183,9 +181,7 @@ module GofPatterns
           result
         end
 
-        def current
-          @current
-        end
+        attr_reader :current
 
         def reset
           @iterator.reset
@@ -376,29 +372,23 @@ module GofPatterns
       class IteratorUtils
         def self.to_array(iterator)
           result = []
-          while iterator.has_next?
-            result << iterator.next
-          end
+          result << iterator.next while iterator.has_next?
           result
         end
 
-        def self.filter(iterator, &predicate)
-          FilteringIterator.new(iterator, &predicate)
+        def self.filter(iterator, &)
+          FilteringIterator.new(iterator, &)
         end
 
         def self.map(iterator, &transformer)
           result = []
-          while iterator.has_next?
-            result << transformer.call(iterator.next)
-          end
+          result << transformer.call(iterator.next) while iterator.has_next?
           result
         end
 
         def self.reduce(iterator, initial, &reducer)
           result = initial
-          while iterator.has_next?
-            result = reducer.call(result, iterator.next)
-          end
+          result = reducer.call(result, iterator.next) while iterator.has_next?
           result
         end
 

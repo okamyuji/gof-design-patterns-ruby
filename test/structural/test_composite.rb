@@ -10,7 +10,7 @@ class TestComposite < GofPatternTest
     assert_equal 'test.txt', file.name
     assert_equal 100, file.size
     assert_equal '.txt', file.extension
-    assert file.leaf?
+    assert_predicate file, :leaf?
   end
 
   def test_directory_creation
@@ -18,9 +18,9 @@ class TestComposite < GofPatternTest
 
     assert_equal 'src', dir.name
     assert_equal 0, dir.size
-    refute dir.leaf?
-    assert dir.composite?
-    assert dir.empty?
+    refute_predicate dir, :leaf?
+    assert_predicate dir, :composite?
+    assert_empty dir
   end
 
   def test_directory_add_file
@@ -56,9 +56,11 @@ class TestComposite < GofPatternTest
     root.add(sub)
 
     found = root.find('target.txt')
+
     assert_equal file, found
 
     not_found = root.find('missing.txt')
+
     assert_nil not_found
   end
 
@@ -67,9 +69,11 @@ class TestComposite < GofPatternTest
     file = GofPatterns::Structural::Composite::File.new('temp.txt', content_size: 50)
 
     dir.add(file)
+
     assert_equal 1, dir.count
 
     dir.remove(file)
+
     assert_equal 0, dir.count
     assert_nil file.parent
   end
@@ -99,6 +103,7 @@ class TestComposite < GofPatternTest
     root.add(file1).add(sub1)
 
     deep_files = root.deep_files
+
     assert_equal 3, deep_files.size
   end
 
@@ -108,6 +113,7 @@ class TestComposite < GofPatternTest
     root.add(file)
 
     output = root.display
+
     assert_match(/project/, output)
     assert_match(/main\.rb/, output)
   end
@@ -143,7 +149,8 @@ class TestComposite < GofPatternTest
 
     eng.add(GofPatterns::Structural::Composite::Employee.new(id: 'E1', name: 'Dev1', position: 'Dev', salary: 50_000))
     eng.add(GofPatterns::Structural::Composite::Employee.new(id: 'E2', name: 'Dev2', position: 'Dev', salary: 50_000))
-    sales.add(GofPatterns::Structural::Composite::Employee.new(id: 'E3', name: 'Sales1', position: 'Rep', salary: 40_000))
+    sales.add(GofPatterns::Structural::Composite::Employee.new(id: 'E3', name: 'Sales1', position: 'Rep',
+                                                               salary: 40_000))
 
     company.add(eng).add(sales)
 
@@ -154,15 +161,18 @@ class TestComposite < GofPatternTest
   def test_find_employee
     company = GofPatterns::Structural::Composite::Department.new(id: 'C1', name: 'Company')
     dept = GofPatterns::Structural::Composite::Department.new(id: 'D1', name: 'Dept')
-    emp = GofPatterns::Structural::Composite::Employee.new(id: 'TARGET', name: 'Target', position: 'Dev', salary: 50_000)
+    emp = GofPatterns::Structural::Composite::Employee.new(id: 'TARGET', name: 'Target', position: 'Dev',
+                                                           salary: 50_000)
 
     dept.add(emp)
     company.add(dept)
 
     found = company.find_employee('TARGET')
+
     assert_equal emp, found
 
     not_found = company.find_employee('MISSING')
+
     assert_nil not_found
   end
 
@@ -170,11 +180,11 @@ class TestComposite < GofPatternTest
     fs = GofPatterns::Structural::Composite::FileSystemBuilder.new
                                                               .root('project')
                                                               .directory('src') do
-      file 'main.rb', size: 1000
-      file 'helper.rb', size: 500
+                                                                file 'main.rb', size: 1000
+                                                                file 'helper.rb', size: 500
     end
                                                               .directory('test') do
-      file 'test_main.rb', size: 800
+                                                                file 'test_main.rb', size: 800
     end
                                                               .build
 
@@ -186,11 +196,12 @@ class TestComposite < GofPatternTest
     org = GofPatterns::Structural::Composite::OrganizationBuilder.new
                                                                  .company('Tech Corp')
                                                                  .department('Engineering') do
-      employee 'Alice', position: 'Lead', salary: 100_000
-      employee 'Bob', position: 'Dev', salary: 80_000
+                                                                   employee 'Alice', position: 'Lead', salary: 100_000
+                                                                   employee 'Bob', position: 'Dev', salary: 80_000
     end
                                                                  .department('Sales') do
-      employee 'Charlie', position: 'Manager', salary: 90_000
+                                                                   employee 'Charlie', position: 'Manager',
+                                                                                       salary: 90_000
     end
                                                                  .build
 

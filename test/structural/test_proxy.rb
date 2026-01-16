@@ -8,40 +8,43 @@ class TestProxy < GofPatternTest
     image = GofPatterns::Structural::Proxy::RealImage.new('photo.jpg')
 
     assert_equal 'photo.jpg', image.filename
-    assert image.width.positive?
-    assert image.height.positive?
+    assert_predicate image.width, :positive?
+    assert_predicate image.height, :positive?
   end
 
   def test_lazy_proxy_defers_loading
     proxy = GofPatterns::Structural::Proxy::LazyImageProxy.new('large_photo.jpg')
 
-    refute proxy.loaded?
+    refute_predicate proxy, :loaded?
     assert_equal 'large_photo.jpg', proxy.filename
 
     # displayを呼ぶと読み込まれる
     proxy.display
-    assert proxy.loaded?
+
+    assert_predicate proxy, :loaded?
   end
 
   def test_lazy_proxy_delegates_display
     proxy = GofPatterns::Structural::Proxy::LazyImageProxy.new('test.jpg')
 
     result = proxy.display
+
     assert_match(/Displaying image: test\.jpg/, result)
   end
 
   def test_lazy_proxy_delegates_dimensions
     proxy = GofPatterns::Structural::Proxy::LazyImageProxy.new('test.jpg')
 
-    assert proxy.width.positive?
-    assert proxy.height.positive?
-    assert proxy.loaded?
+    assert_predicate proxy.width, :positive?
+    assert_predicate proxy.height, :positive?
+    assert_predicate proxy, :loaded?
   end
 
   def test_protected_proxy_allows_user_read
     proxy = GofPatterns::Structural::Proxy::ProtectedImageProxy.new('private.jpg', user_role: :user)
 
     result = proxy.display
+
     assert_match(/Displaying image/, result)
   end
 
@@ -57,6 +60,7 @@ class TestProxy < GofPatternTest
     proxy = GofPatterns::Structural::Proxy::ProtectedImageProxy.new('to_delete.jpg', user_role: :admin)
 
     result = proxy.delete
+
     assert_match(/Deleted/, result)
   end
 
@@ -72,14 +76,16 @@ class TestProxy < GofPatternTest
     cache = {}
     proxy = GofPatterns::Structural::Proxy::CachingImageProxy.new('cached.jpg', cache: cache)
 
-    refute proxy.cache_hit?
+    refute_predicate proxy, :cache_hit?
 
     # 最初の呼び出し
     result1 = proxy.display
-    assert proxy.cache_hit?
+
+    assert_predicate proxy, :cache_hit?
 
     # キャッシュからの呼び出し
     result2 = proxy.display
+
     assert_equal result1, result2
   end
 
@@ -88,19 +94,23 @@ class TestProxy < GofPatternTest
     proxy = GofPatterns::Structural::Proxy::CachingImageProxy.new('temp.jpg', cache: cache)
 
     proxy.display
-    assert proxy.cache_hit?
+
+    assert_predicate proxy, :cache_hit?
 
     proxy.invalidate_cache
-    refute proxy.cache_hit?
+
+    refute_predicate proxy, :cache_hit?
   end
 
   def test_real_database_query
     db = GofPatterns::Structural::Proxy::RealDatabaseQuery.new
 
     users = db.fetch_all(:users)
+
     assert_equal 3, users.size
 
     user = db.find_by_id(:users, 1)
+
     assert_equal 'Alice', user[:name]
   end
 
@@ -115,8 +125,8 @@ class TestProxy < GofPatternTest
     proxy.find_by_id(:users, 1)
 
     assert_equal 2, proxy.query_count
-    assert logs.any? { |l| l.include?('Fetching all') }
-    assert logs.any? { |l| l.include?('Finding') }
+    assert(logs.any? { |l| l.include?('Fetching all') })
+    assert(logs.any? { |l| l.include?('Finding') })
   end
 
   def test_logging_proxy_reset_count
@@ -124,9 +134,11 @@ class TestProxy < GofPatternTest
     proxy = GofPatterns::Structural::Proxy::LoggingDatabaseProxy.new(db, logger: ->(_) {})
 
     proxy.fetch_all(:users)
+
     assert_equal 1, proxy.query_count
 
     proxy.reset_count
+
     assert_equal 0, proxy.query_count
   end
 
@@ -141,9 +153,10 @@ class TestProxy < GofPatternTest
     proxy.fetch_all(:users)
 
     stats = proxy.cache_stats
+
     assert_equal 1, stats[:hits]
     assert_equal 1, stats[:misses]
-    assert_equal 50.0, stats[:hit_rate]
+    assert_in_delta(50.0, stats[:hit_rate])
   end
 
   def test_caching_database_proxy_find_by_id
@@ -156,6 +169,7 @@ class TestProxy < GofPatternTest
     assert_equal user1, user2
 
     stats = proxy.cache_stats
+
     assert_equal 1, stats[:hits]
   end
 
@@ -167,6 +181,7 @@ class TestProxy < GofPatternTest
     proxy.clear_cache
 
     stats = proxy.cache_stats
+
     assert_equal 0, stats[:hits]
     assert_equal 0, stats[:misses]
   end

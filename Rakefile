@@ -33,4 +33,28 @@ namespace :test do
   end
 end
 
+namespace :examples do
+  desc 'Run all pattern examples'
+  task :run do
+    Dir.glob('examples/**/*_example.rb').each do |file|
+      puts "\n#{'=' * 60}"
+      puts "Running: #{file}"
+      puts '=' * 60
+      system("ruby #{file}") || abort("Example failed: #{file}")
+    end
+  end
+
+  %i[creational structural behavioral].each do |category|
+    desc "Run #{category} pattern examples"
+    task category do
+      Dir.glob("examples/#{category}/*_example.rb").each do |file|
+        puts "\n#{'=' * 60}"
+        puts "Running: #{file}"
+        puts '=' * 60
+        system("ruby #{file}") || abort("Example failed: #{file}")
+      end
+    end
+  end
+end
+
 task default: :test

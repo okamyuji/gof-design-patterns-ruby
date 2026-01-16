@@ -18,7 +18,7 @@ class TestPrototype < GofPatternTest
     p2 = GofPatterns::Creational::Prototype::Point.new(5, 5)
 
     assert_equal p1, p2
-    assert p1.frozen?
+    assert_predicate p1, :frozen?
   end
 
   def test_point_move_returns_new_point
@@ -79,12 +79,14 @@ class TestPrototype < GofPatternTest
 
   def test_rectangle_area
     rect = GofPatterns::Creational::Prototype::Rectangle.new(width: 10, height: 5)
+
     assert_equal 50, rect.area
   end
 
   def test_circle_area
     circle = GofPatterns::Creational::Prototype::Circle.new(radius: 10)
     expected = Math::PI * 100
+
     assert_in_delta expected, circle.area, 0.001
   end
 
@@ -129,6 +131,7 @@ class TestPrototype < GofPatternTest
     registry.register(:circle, GofPatterns::Creational::Prototype::Circle.new)
 
     keys = registry.list_keys
+
     assert_includes keys, :rect
     assert_includes keys, :circle
   end

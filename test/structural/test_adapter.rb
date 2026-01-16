@@ -11,11 +11,12 @@ class TestAdapter < GofPatternTest
     assert_equal m1, m2
     assert_equal 10_000, m1.to_cents
     assert_equal 'JPY 100.00', m1.to_s
-    assert m1.frozen?
+    assert_predicate m1, :frozen?
   end
 
   def test_money_currency_uppercase
     money = GofPatterns::Structural::Adapter::Money.new(50, 'usd')
+
     assert_equal 'USD', money.currency
   end
 
@@ -26,7 +27,7 @@ class TestAdapter < GofPatternTest
     result = adapter.process_payment(money, 'JPY')
 
     assert_instance_of GofPatterns::Structural::Adapter::TransactionResult, result
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^LEG-/, result.transaction_id)
   end
 
@@ -36,7 +37,7 @@ class TestAdapter < GofPatternTest
 
     result = adapter.refund('LEG-12345678', money)
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_legacy_payment_adapter_get_status
@@ -44,7 +45,7 @@ class TestAdapter < GofPatternTest
 
     result = adapter.get_status('LEG-12345678')
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_external_api_adapter_process_payment
@@ -53,7 +54,7 @@ class TestAdapter < GofPatternTest
 
     result = adapter.process_payment(money, 'JPY')
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^EXT-/, result.transaction_id)
   end
 
@@ -63,7 +64,7 @@ class TestAdapter < GofPatternTest
 
     result = adapter.refund('EXT-12345678', money)
 
-    assert result.success?
+    assert_predicate result, :success?
     assert_match(/^REF-/, result.transaction_id)
   end
 
@@ -72,7 +73,7 @@ class TestAdapter < GofPatternTest
 
     result = adapter.get_status('EXT-12345678')
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_payment_service_with_external_adapter
@@ -80,7 +81,7 @@ class TestAdapter < GofPatternTest
 
     result = service.pay(5000)
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_payment_service_with_legacy_adapter
@@ -88,7 +89,7 @@ class TestAdapter < GofPatternTest
 
     result = service.pay(3000)
 
-    assert result.success?
+    assert_predicate result, :success?
   end
 
   def test_transaction_result_value_object
@@ -104,8 +105,8 @@ class TestAdapter < GofPatternTest
     )
 
     assert_equal result1, result2
-    assert result1.success?
-    assert result1.frozen?
+    assert_predicate result1, :success?
+    assert_predicate result1, :frozen?
   end
 
   def test_transaction_result_failed_status
@@ -115,6 +116,6 @@ class TestAdapter < GofPatternTest
       message: 'Error'
     )
 
-    refute result.success?
+    refute_predicate result, :success?
   end
 end

@@ -54,7 +54,7 @@ class TestFactoryMethod < GofPatternTest
 
     assert_equal content1, content2
     assert_equal content1.hash, content2.hash
-    assert content1.frozen?
+    assert_predicate content1, :frozen?
   end
 
   def test_document_creator_registry
@@ -70,6 +70,7 @@ class TestFactoryMethod < GofPatternTest
     registry = GofPatterns::Creational::FactoryMethod::DocumentCreatorRegistry
 
     creator = registry.creator_for(:pdf)
+
     assert_instance_of GofPatterns::Creational::FactoryMethod::PdfDocumentCreator, creator
   end
 

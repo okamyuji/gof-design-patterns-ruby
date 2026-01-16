@@ -194,16 +194,16 @@ module GofPatterns
           set_age(value)
         end
 
-        def address(&block)
+        def address(&)
           builder = AddressBuilder.new
-          builder.instance_eval(&block) if block_given?
+          builder.instance_eval(&) if block_given?
           @address = builder.build
           self
         end
 
-        def contact(&block)
+        def contact(&)
           builder = ContactBuilder.new
-          builder.instance_eval(&block) if block_given?
+          builder.instance_eval(&) if block_given?
           @contact = builder.build
           self
         end
@@ -319,9 +319,9 @@ module GofPatterns
 
       # Domain Service: プロファイル生成サービス
       class ProfileFactory
-        def self.create(&block)
+        def self.create(&)
           builder = FluentUserProfileBuilder.new
-          builder.instance_eval(&block) if block_given?
+          builder.instance_eval(&) if block_given?
           builder.build
         end
       end

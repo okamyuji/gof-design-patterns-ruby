@@ -40,6 +40,7 @@ class TestSingleton < GofPatternTest
     @config.set(:key2, 'value2')
 
     all = @config.all
+
     assert_equal 'value1', all[:key1]
     assert_equal 'value2', all[:key2]
   end
@@ -47,6 +48,7 @@ class TestSingleton < GofPatternTest
   def test_configuration_size
     assert_equal 0, @config.size
     @config.set(:key1, 'value1')
+
     assert_equal 1, @config.size
   end
 
@@ -56,7 +58,7 @@ class TestSingleton < GofPatternTest
 
     assert_equal cv1, cv2
     assert_equal cv1.hash, cv2.hash
-    assert cv1.frozen?
+    assert_predicate cv1, :frozen?
   end
 
   def test_manual_singleton_returns_same_instance

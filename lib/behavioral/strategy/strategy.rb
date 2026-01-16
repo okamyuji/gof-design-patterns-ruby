@@ -183,13 +183,9 @@ module GofPatterns
 
       # Context: 支払い処理
       class PaymentProcessor
-        attr_reader :strategy
+        attr_accessor :strategy
 
         def initialize(strategy = nil)
-          @strategy = strategy
-        end
-
-        def strategy=(strategy)
           @strategy = strategy
         end
 
@@ -277,9 +273,7 @@ module GofPatterns
 
         def merge(left, right)
           result = []
-          until left.empty? || right.empty?
-            result << (left.first <= right.first ? left.shift : right.shift)
-          end
+          result << (left.first <= right.first ? left.shift : right.shift) until left.empty? || right.empty?
           result + left + right
         end
       end

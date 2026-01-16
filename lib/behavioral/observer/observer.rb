@@ -35,8 +35,8 @@ module GofPatterns
           @observers.delete(observer)
         end
 
-        def notify(*args)
-          @observers.each { |observer| observer.update(self, *args) }
+        def notify(*)
+          @observers.each { |observer| observer.update(self, *) }
         end
 
         def observers_count
@@ -150,7 +150,7 @@ module GofPatterns
 
         def update(_subject, stock_price, change)
           log_entry = "[#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}] " \
-                      "#{stock_price.symbol}: ¥#{stock_price.price} (#{change >= 0 ? '+' : ''}#{change}%)"
+                      "#{stock_price.symbol}: ¥#{stock_price.price} (#{'+' if change >= 0}#{change}%)"
           @logs << log_entry
 
           File.open(@log_file, 'a') { |f| f.puts(log_entry) } if @log_file
@@ -303,8 +303,8 @@ module GofPatterns
           @listeners[event].delete(block)
         end
 
-        def emit(event, *args)
-          @listeners[event].each { |listener| listener.call(*args) }
+        def emit(event, *)
+          @listeners[event].each { |listener| listener.call(*) }
         end
 
         def once(event, &block)

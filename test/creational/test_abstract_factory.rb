@@ -46,11 +46,13 @@ class TestAbstractFactory < GofPatternTest
   def test_checkbox_toggle
     checkbox = @light_factory.create_checkbox('Option', checked: false)
 
-    assert_equal false, checkbox.checked
+    refute checkbox.checked
     checkbox.toggle
-    assert_equal true, checkbox.checked
+
+    assert checkbox.checked
     checkbox.toggle
-    assert_equal false, checkbox.checked
+
+    refute checkbox.checked
   end
 
   def test_light_checkbox_render
@@ -74,24 +76,30 @@ class TestAbstractFactory < GofPatternTest
 
     assert_equal '', text_field.value
     text_field.input('Hello')
+
     assert_equal 'Hello', text_field.value
     text_field.clear
+
     assert_equal '', text_field.value
   end
 
   def test_light_text_field_render
     text_field = @light_factory.create_text_field('Placeholder')
+
     assert_equal 'Light [Placeholder]', text_field.render
 
     text_field.input('Typed text')
+
     assert_equal 'Light [Typed text]', text_field.render
   end
 
   def test_dark_text_field_render
     text_field = @dark_factory.create_text_field('Placeholder')
+
     assert_equal 'Dark [[Placeholder]]', text_field.render
 
     text_field.input('Typed text')
+
     assert_equal 'Dark [[Typed text]]', text_field.render
   end
 
@@ -140,7 +148,7 @@ class TestAbstractFactory < GofPatternTest
 
     assert_equal color1, color2
     assert_equal '#FF8000', color1.to_hex
-    assert color1.frozen?
+    assert_predicate color1, :frozen?
   end
 
   def test_color_clamping

@@ -162,8 +162,8 @@ module GofPatterns
       class Rectangle < Shape
         attr_accessor :width, :height
 
-        def initialize(width: 10, height: 10, **kwargs)
-          super(**kwargs)
+        def initialize(width: 10, height: 10, **)
+          super(**)
           @width = width
           @height = height
         end
@@ -188,8 +188,8 @@ module GofPatterns
       class Circle < Shape
         attr_accessor :radius
 
-        def initialize(radius: 5, **kwargs)
-          super(**kwargs)
+        def initialize(radius: 5, **)
+          super(**)
           @radius = radius
         end
 
@@ -210,8 +210,8 @@ module GofPatterns
 
       # Entity: 複合図形（Composite + Prototype）
       class CompositeShape < Shape
-        def initialize(**kwargs)
-          super(**kwargs)
+        def initialize(**)
+          super
           @children = []
         end
 

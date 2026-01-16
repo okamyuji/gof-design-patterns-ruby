@@ -78,9 +78,7 @@ module GofPatterns
           @real_image.height
         end
 
-        def filename
-          @filename
-        end
+        attr_reader :filename
 
         def loaded?
           !@real_image.nil?
@@ -119,9 +117,7 @@ module GofPatterns
           @real_image.height
         end
 
-        def filename
-          @filename
-        end
+        attr_reader :filename
 
         def delete
           check_access!(:admin)
@@ -165,9 +161,7 @@ module GofPatterns
           get_metadata[:height]
         end
 
-        def filename
-          @filename
-        end
+        attr_reader :filename
 
         def cache_hit?
           @cache.key?(cache_key(:display))
@@ -285,9 +279,7 @@ module GofPatterns
           @real_db.find_by_id(table, id)
         end
 
-        def query_count
-          @query_count
-        end
+        attr_reader :query_count
 
         def reset_count
           @query_count = 0
@@ -427,7 +419,7 @@ module GofPatterns
         end
 
         def self.filter_options(options, allowed_keys)
-          options.select { |k, _| allowed_keys.include?(k) }
+          options.slice(*allowed_keys)
         end
         private_class_method :filter_options
       end

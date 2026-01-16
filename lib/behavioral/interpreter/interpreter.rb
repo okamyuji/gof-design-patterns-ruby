@@ -271,7 +271,7 @@ module GofPatterns
         private
 
         def tokenize(str)
-          str.scan(/\d+\.?\d*|[+\-*\/()]|\w+/)
+          str.scan(%r{\d+\.?\d*|[+\-*/()]|\w+})
         end
 
         def build_expression(tokens)
@@ -330,9 +330,9 @@ module GofPatterns
           expression.interpret(@context)
         end
 
-        def build_expression(&block)
+        def build_expression(&)
           builder = ExpressionBuilder.new
-          builder.instance_eval(&block)
+          builder.instance_eval(&)
           builder.result
         end
 

@@ -8,8 +8,8 @@ class TestObserver < GofPatternTest
     price = GofPatterns::Behavioral::Observer::StockPrice.new(symbol: 'aapl', price: 150.5)
 
     assert_equal 'AAPL', price.symbol
-    assert_equal 150.5, price.price
-    assert price.frozen?
+    assert_in_delta(150.5, price.price)
+    assert_predicate price, :frozen?
   end
 
   def test_stock_monitor_update_price
@@ -17,7 +17,8 @@ class TestObserver < GofPatternTest
     monitor.update_price('AAPL', 150.0)
 
     price = monitor.get_price('AAPL')
-    assert_equal 150.0, price.price
+
+    assert_in_delta(150.0, price.price)
   end
 
   def test_stock_display_observer
@@ -28,8 +29,9 @@ class TestObserver < GofPatternTest
     monitor.update_price('AAPL', 150.0)
 
     last = display.last_display
+
     assert_equal 'AAPL', last[:price].symbol
-    assert_equal 150.0, last[:price].price
+    assert_in_delta(150.0, last[:price].price)
   end
 
   def test_stock_alert_observer
@@ -41,7 +43,7 @@ class TestObserver < GofPatternTest
     monitor.update_price('AAPL', 100.0)
     monitor.update_price('AAPL', 110.0) # 10% increase
 
-    assert alert.alerts.any? { |a| a[:symbol] == 'AAPL' && a[:direction] == 'UP' }
+    assert(alert.alerts.any? { |a| a[:symbol] == 'AAPL' && a[:direction] == 'UP' })
   end
 
   def test_stock_logger_observer
@@ -51,7 +53,7 @@ class TestObserver < GofPatternTest
     monitor.attach(logger)
     monitor.update_price('GOOG', 2500.0)
 
-    assert logger.logs.any? { |l| l.include?('GOOG') }
+    assert(logger.logs.any? { |l| l.include?('GOOG') })
   end
 
   def test_subject_attach_detach
@@ -59,9 +61,11 @@ class TestObserver < GofPatternTest
     display = GofPatterns::Behavioral::Observer::StockDisplay.new('Test')
 
     monitor.attach(display)
+
     assert_equal 1, monitor.observers_count
 
     monitor.detach(display)
+
     assert_equal 0, monitor.observers_count
   end
 
@@ -87,8 +91,8 @@ class TestObserver < GofPatternTest
 
     station.set_measurements(25.0, 65.0, 1013.0)
 
-    assert_equal 25.0, current.temperature
-    assert_equal 65.0, current.humidity
+    assert_in_delta(25.0, current.temperature)
+    assert_in_delta(65.0, current.humidity)
   end
 
   def test_statistics_display
@@ -99,9 +103,9 @@ class TestObserver < GofPatternTest
     station.set_measurements(25.0, 65.0, 1015.0)
     station.set_measurements(30.0, 70.0, 1020.0)
 
-    assert_equal 25.0, stats.average_temperature
-    assert_equal 30.0, stats.max_temperature
-    assert_equal 20.0, stats.min_temperature
+    assert_in_delta(25.0, stats.average_temperature)
+    assert_in_delta(30.0, stats.max_temperature)
+    assert_in_delta(20.0, stats.min_temperature)
   end
 
   def test_forecast_display
@@ -109,9 +113,11 @@ class TestObserver < GofPatternTest
     forecast = GofPatterns::Behavioral::Observer::ForecastDisplay.new(station)
 
     station.set_measurements(25.0, 65.0, 1010.0) # 気圧下降
+
     assert_match(/rainy/, forecast.forecast)
 
     station.set_measurements(25.0, 65.0, 1020.0) # 気圧上昇
+
     assert_match(/Improving/, forecast.forecast)
   end
 
@@ -119,11 +125,18 @@ class TestObserver < GofPatternTest
     station = GofPatterns::Behavioral::Observer::WeatherStation.new
     current = GofPatterns::Behavioral::Observer::CurrentConditionsDisplay.new(station)
 
+    # First set some initial measurements
+    station.set_measurements(25.0, 70.0, 1010.0)
+
+    assert_in_delta(25.0, current.temperature, 0.01)
+
+    # Now unsubscribe
     current.unsubscribe
 
+    # Set new measurements - display should not update
     station.set_measurements(30.0, 80.0, 1000.0)
-    # unsubscribe後は更新されない（エラーが発生しないことを確認）
-    refute_equal 30.0, current.temperature
+    # Should still have the old value, not the new one
+    assert_in_delta(25.0, current.temperature, 0.01)
   end
 
   def test_event_emitter_on_and_emit
@@ -165,10 +178,11 @@ class TestObserver < GofPatternTest
 
   def test_event_emitter_clear
     emitter = GofPatterns::Behavioral::Observer::EventEmitter.new
-    emitter.on(:test) { }
-    emitter.on(:test) { }
+    emitter.on(:test) {}
+    emitter.on(:test) {}
 
     emitter.clear(:test)
+
     assert_equal 0, emitter.listeners_count(:test)
   end
 

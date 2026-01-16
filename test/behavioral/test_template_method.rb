@@ -9,8 +9,8 @@ class TestTemplateMethod < GofPatternTest
     result = miner.mine('/data/test.csv')
 
     assert_equal :completed, result[:status]
-    assert result[:data][:records].is_a?(Array)
-    assert result[:data][:count].positive?
+    assert_kind_of Array, result[:data][:records]
+    assert_predicate result[:data][:count], :positive?
   end
 
   def test_json_data_miner
@@ -18,7 +18,7 @@ class TestTemplateMethod < GofPatternTest
     result = miner.mine('/data/test.json')
 
     assert_equal :completed, result[:status]
-    assert result[:data][:records].is_a?(Array)
+    assert_kind_of Array, result[:data][:records]
     assert_includes result[:data][:keys], 'name'
   end
 
@@ -83,8 +83,8 @@ class TestTemplateMethod < GofPatternTest
     result = generator.generate(data)
 
     assert_match(/<html>/, result)
-    assert_match(/<h1>Test Document<\/h1>/, result)
-    assert_match(/<h2>Section 1<\/h2>/, result)
+    assert_match(%r{<h1>Test Document</h1>}, result)
+    assert_match(%r{<h2>Section 1</h2>}, result)
     assert_match(/Test Author/, result)
   end
 
@@ -126,12 +126,15 @@ class TestTemplateMethod < GofPatternTest
     factory = GofPatterns::Behavioral::TemplateMethod::DocumentGeneratorFactory
 
     html = factory.create(:html)
+
     assert_instance_of GofPatterns::Behavioral::TemplateMethod::HtmlDocumentGenerator, html
 
     md = factory.create(:markdown)
+
     assert_instance_of GofPatterns::Behavioral::TemplateMethod::MarkdownDocumentGenerator, md
 
     text = factory.create(:text)
+
     assert_instance_of GofPatterns::Behavioral::TemplateMethod::PlainTextDocumentGenerator, text
   end
 
@@ -147,13 +150,14 @@ class TestTemplateMethod < GofPatternTest
     miner = GofPatterns::Behavioral::TemplateMethod::CsvDataMiner.new
     result = miner.mine('/test.csv')
 
-    assert result[:timestamp].is_a?(Time)
+    assert_kind_of Time, result[:timestamp]
   end
 
   def test_game_ai_collect_resources
     ai = GofPatterns::Behavioral::TemplateMethod::AggressiveAI.new
 
     ai.take_turn
-    assert ai.resources >= 0
+
+    assert_operator ai.resources, :>=, 0
   end
 end

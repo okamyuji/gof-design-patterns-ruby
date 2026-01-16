@@ -101,7 +101,7 @@ class TestBuilder < GofPatternTest
     assert_equal 'user-002', profile.id
     assert_equal 'Jane Doe', profile.name
     assert_equal 25, profile.age
-    assert_equal true, profile.preferences[:newsletter]
+    assert profile.preferences[:newsletter]
   end
 
   def test_fluent_builder_with_block_address
@@ -159,7 +159,7 @@ class TestBuilder < GofPatternTest
     assert_equal 'dsl-001', profile.id
     assert_equal 'DSL User', profile.name
     assert_equal 40, profile.age
-    assert_equal true, profile.preferences[:vip]
+    assert profile.preferences[:vip]
   end
 
   def test_address_value_object
@@ -177,7 +177,7 @@ class TestBuilder < GofPatternTest
     )
 
     assert_equal addr1, addr2
-    assert addr1.frozen?
+    assert_predicate addr1, :frozen?
   end
 
   def test_contact_value_object
@@ -185,7 +185,7 @@ class TestBuilder < GofPatternTest
     contact2 = GofPatterns::Creational::Builder::Contact.new(email: 'test@example.com')
 
     assert_equal contact1, contact2
-    assert contact1.frozen?
+    assert_predicate contact1, :frozen?
   end
 
   def test_profile_to_hash

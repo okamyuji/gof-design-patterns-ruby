@@ -232,7 +232,7 @@ module GofPatterns
           true
         end
 
-        def process(request)
+        def process(_request)
           Response.new(
             success: true,
             message: 'Logged',

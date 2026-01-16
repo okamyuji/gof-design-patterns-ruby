@@ -43,14 +43,14 @@ module GofPatterns
 
         def delete(start_pos, length)
           deleted = @content[start_pos, length]
-          @content = @content[0...start_pos].to_s + @content[start_pos + length..].to_s
+          @content = @content[0...start_pos].to_s + @content[(start_pos + length)..].to_s
           @cursor_position = start_pos
           deleted
         end
 
         def replace(start_pos, length, new_text)
           old_text = @content[start_pos, length]
-          @content = @content[0...start_pos].to_s + new_text + @content[start_pos + length..].to_s
+          @content = @content[0...start_pos].to_s + new_text + @content[(start_pos + length)..].to_s
           @cursor_position = start_pos + new_text.length
           old_text
         end

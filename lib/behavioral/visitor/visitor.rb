@@ -72,7 +72,7 @@ module GofPatterns
       # Concrete Visitor: 面積計算
       class AreaCalculator < Visitor
         def visit_circle(circle)
-          Math::PI * circle.radius**2
+          Math::PI * (circle.radius**2)
         end
 
         def visit_rectangle(rectangle)
@@ -96,7 +96,7 @@ module GofPatterns
 
         def visit_triangle(triangle)
           # 二等辺三角形と仮定
-          side = Math.sqrt((triangle.base / 2.0)**2 + triangle.height**2)
+          side = Math.sqrt(((triangle.base / 2.0)**2) + (triangle.height**2))
           triangle.base + (2 * side)
         end
       end

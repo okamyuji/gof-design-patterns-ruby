@@ -185,7 +185,7 @@ module GofPatterns
 
         private
 
-        def handle_text_changed(sender, text)
+        def handle_text_changed(_sender, text)
           # テキストフィールドの変更に応じてボタンを有効/無効化
           submit_button = @components[:submit_button]
           return unless submit_button
@@ -195,7 +195,7 @@ module GofPatterns
 
         def handle_checkbox_changed(sender, checked)
           # チェックボックスの変更に応じて関連フィールドを有効/無効化
-          related_field = @components["#{sender.name}_related".to_sym]
+          related_field = @components[:"#{sender.name}_related"]
           return unless related_field
 
           related_field.enabled = checked
@@ -320,7 +320,7 @@ module GofPatterns
           flight.mediator = self
         end
 
-        def notify(sender, event, data = nil)
+        def notify(sender, event, _data = nil)
           case event
           when :request_landing
             handle_landing_request(sender)
@@ -344,7 +344,7 @@ module GofPatterns
         def handle_landing_request(flight)
           if @runway_occupied
             @landing_queue << flight
-            flight.receive_message('Runway busy. Added to queue. Position: #{@landing_queue.length}')
+            flight.receive_message("Runway busy. Added to queue. Position: #{@landing_queue.length}")
           else
             @runway_occupied = true
             flight.receive_message('Cleared for landing')
@@ -362,7 +362,7 @@ module GofPatterns
           end
         end
 
-        def handle_runway_cleared(flight)
+        def handle_runway_cleared(_flight)
           @runway_occupied = false
           next_flight = @landing_queue.shift
           return unless next_flight

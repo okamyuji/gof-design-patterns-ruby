@@ -17,7 +17,7 @@ class TestInterpreter < GofPatternTest
     expr = GofPatterns::Behavioral::Interpreter::NumberExpression.new(42)
     context = GofPatterns::Behavioral::Interpreter::Context.new
 
-    assert_equal 42.0, expr.interpret(context)
+    assert_in_delta(42.0, expr.interpret(context))
   end
 
   def test_variable_expression
@@ -43,7 +43,7 @@ class TestInterpreter < GofPatternTest
     right = GofPatterns::Behavioral::Interpreter::NumberExpression.new(5)
     expr = GofPatterns::Behavioral::Interpreter::AddExpression.new(left, right)
 
-    assert_equal 15.0, expr.interpret(context)
+    assert_in_delta(15.0, expr.interpret(context))
   end
 
   def test_subtract_expression
@@ -52,7 +52,7 @@ class TestInterpreter < GofPatternTest
     right = GofPatterns::Behavioral::Interpreter::NumberExpression.new(3)
     expr = GofPatterns::Behavioral::Interpreter::SubtractExpression.new(left, right)
 
-    assert_equal 7.0, expr.interpret(context)
+    assert_in_delta(7.0, expr.interpret(context))
   end
 
   def test_multiply_expression
@@ -61,7 +61,7 @@ class TestInterpreter < GofPatternTest
     right = GofPatterns::Behavioral::Interpreter::NumberExpression.new(7)
     expr = GofPatterns::Behavioral::Interpreter::MultiplyExpression.new(left, right)
 
-    assert_equal 42.0, expr.interpret(context)
+    assert_in_delta(42.0, expr.interpret(context))
   end
 
   def test_divide_expression
@@ -70,7 +70,7 @@ class TestInterpreter < GofPatternTest
     right = GofPatterns::Behavioral::Interpreter::NumberExpression.new(4)
     expr = GofPatterns::Behavioral::Interpreter::DivideExpression.new(left, right)
 
-    assert_equal 5.0, expr.interpret(context)
+    assert_in_delta(5.0, expr.interpret(context))
   end
 
   def test_divide_by_zero
@@ -95,7 +95,7 @@ class TestInterpreter < GofPatternTest
     add = GofPatterns::Behavioral::Interpreter::AddExpression.new(x, three)
     expr = GofPatterns::Behavioral::Interpreter::MultiplyExpression.new(add, two)
 
-    assert_equal 16.0, expr.interpret(context)
+    assert_in_delta(16.0, expr.interpret(context))
   end
 
   def test_boolean_expression
@@ -166,7 +166,8 @@ class TestInterpreter < GofPatternTest
     context = GofPatterns::Behavioral::Interpreter::Context.new
 
     expr = parser.parse('5 + 3')
-    assert_equal 8.0, expr.interpret(context)
+
+    assert_in_delta(8.0, expr.interpret(context))
   end
 
   def test_expression_parser_multiplication
@@ -175,7 +176,7 @@ class TestInterpreter < GofPatternTest
 
     expr = parser.parse('2 + 3 * 4')
     # 演算子の優先順位: 2 + (3 * 4) = 14
-    assert_equal 14.0, expr.interpret(context)
+    assert_in_delta(14.0, expr.interpret(context))
   end
 
   def test_expression_parser_with_variables
@@ -185,7 +186,8 @@ class TestInterpreter < GofPatternTest
     context.set(:y, 5)
 
     expr = parser.parse('x + y * 2')
-    assert_equal 20.0, expr.interpret(context)
+
+    assert_in_delta(20.0, expr.interpret(context))
   end
 
   def test_expression_evaluator
@@ -194,7 +196,8 @@ class TestInterpreter < GofPatternTest
     evaluator.set_variable(:y, 50)
 
     result = evaluator.evaluate('x + y')
-    assert_equal 150.0, result
+
+    assert_in_delta(150.0, result)
   end
 
   def test_expression_builder
@@ -206,7 +209,8 @@ class TestInterpreter < GofPatternTest
     end
 
     result = evaluator.evaluate_expression(expr)
-    assert_equal 1600.0, result
+
+    assert_in_delta(1600.0, result)
   end
 
   def test_expression_to_string

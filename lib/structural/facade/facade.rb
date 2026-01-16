@@ -80,7 +80,7 @@ module GofPatterns
           @shipments = {}
         end
 
-        def calculate_shipping(address, weight)
+        def calculate_shipping(_address, weight)
           base_rate = 500
           weight_rate = weight * 10
           { cost: base_rate + weight_rate, estimated_days: 3 }
@@ -268,9 +268,7 @@ module GofPatterns
             unless @inventory.check_availability(item.product_id, item.quantity)
               return { success: false, error: "Product #{item.product_id} is out of stock" }
             end
-          end
 
-          items.each do |item|
             @inventory.reserve(item.product_id, item.quantity)
           end
 
