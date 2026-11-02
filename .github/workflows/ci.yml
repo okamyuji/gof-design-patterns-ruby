@@ -8,6 +8,10 @@ permissions:
   contents: read
 
 jobs:
+  # rails-ci with security-scan: false (or no rails-ci) does not run bundler-audit
+  audit:
+    uses: okamyuji/reusable-workflows/.github/workflows/ruby-audit.yml@v1
+
   ci:
     uses: okamyuji/reusable-workflows/.github/workflows/rails-ci.yml@v1
     # the shared lockfile-recreate job requests pull-requests: write even when it does not run
