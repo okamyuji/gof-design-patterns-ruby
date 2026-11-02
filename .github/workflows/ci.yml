@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: okamyuji/reusable-workflows/.github/workflows/rails-ci.yml@v1
+    # the shared lockfile-recreate job requests pull-requests: write even when it does not run
+    permissions:
+      contents: read
+      pull-requests: write
+    with:
+      # not a Rails app, so no brakeman
+      security-scan: false
+      # rubocop reports existing offenses across the examples; tests gate the build
+      run-lint: false
+      test-command: bundle exec rake test
+
+  security:
+    uses: okamyuji/reusable-workflows/.github/workflows/security-scan.yml@v1
