@@ -23,7 +23,6 @@
 /lib/bundler/man/
 
 # Bundler
-Gemfile.lock
 
 # RVM, rbenv, mise
 .ruby-version
