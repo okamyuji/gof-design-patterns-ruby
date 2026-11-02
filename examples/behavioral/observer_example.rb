@@ -110,7 +110,7 @@ puts
 monitor = Observer::StockMonitor.new
 
 multi_display = Observer::StockDisplay.new('Multi Display')
-multi_logger = Observer::StockLogger.new('Multi Logger')
+multi_logger = Observer::StockLogger.new
 
 monitor.attach(multi_display)
 monitor.attach(multi_logger)
